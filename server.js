@@ -20,7 +20,8 @@ function demarrerServeurLocal (racineRenderer) {
 		const serveur = http.createServer(function (requete, reponse) {
 			const cheminDemande = decodeURIComponent(requete.url.split('?')[0])
 			const cheminAbsolu = path.normalize(path.join(racineRenderer, cheminDemande))
-			if (!cheminAbsolu.startsWith(racineRenderer)) {
+			const relatif = path.relative(racineRenderer, cheminAbsolu)
+			if (relatif.startsWith('..') || path.isAbsolute(relatif)) {
 				reponse.writeHead(403)
 				reponse.end()
 				return
