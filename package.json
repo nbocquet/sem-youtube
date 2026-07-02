@@ -1,7 +1,7 @@
 {
 	"name": "sem-youtube",
 	"productName": "sem-youtube",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Regarder rapidement une vidéo YouTube sans distraction, sans backend. Basé sur le lecteur de Digiview (La Digitale).",
 	"private": true,
 	"license": "AGPL-3.0",
