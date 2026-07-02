@@ -45,7 +45,7 @@ function creerFenetre (lienInitial) {
 	})
 
 	fenetrePrincipale.webContents.on('will-navigate', function (evenement, url) {
-		if (!url.startsWith(baseURL)) {
+		if (new URL(url).origin !== new URL(baseURL).origin) {
 			evenement.preventDefault()
 			shell.openExternal(url)
 		}
