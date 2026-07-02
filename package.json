@@ -1,0 +1,42 @@
+{
+	"name": "sem-youtube",
+	"productName": "sem-youtube",
+	"version": "1.0.0",
+	"description": "Regarder rapidement une vidéo YouTube sans distraction, sans backend. Basé sur le lecteur de Digiview (La Digitale).",
+	"private": true,
+	"license": "AGPL-3.0",
+	"homepage": "https://codeberg.org/ladigitale/digiview",
+	"author": {
+		"name": "nbocquet",
+		"email": "nbocquet@gmail.com"
+	},
+	"main": "main.js",
+	"scripts": {
+		"start": "electron .",
+		"dist": "electron-builder --mac --linux"
+	},
+	"devDependencies": {
+		"electron": "^33.0.0",
+		"electron-builder": "^25.0.0"
+	},
+	"build": {
+		"appId": "dev.local.sem-youtube",
+		"files": [
+			"main.js",
+			"preload.js",
+			"renderer/**/*",
+			"!renderer/**/*.map"
+		],
+		"directories": {
+			"buildResources": "build"
+		},
+		"mac": {
+			"category": "public.app-category.video",
+			"target": ["dmg", "zip"]
+		},
+		"linux": {
+			"category": "AudioVideo",
+			"target": ["AppImage"]
+		}
+	}
+}
