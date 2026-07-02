@@ -13,7 +13,8 @@
 	"main": "main.js",
 	"scripts": {
 		"start": "electron .",
-		"dist": "electron-builder --mac --linux"
+		"dist": "electron-builder --mac --linux",
+		"dist:deb": "node scripts/build-deb.mjs"
 	},
 	"devDependencies": {
 		"electron": "^33.0.0",

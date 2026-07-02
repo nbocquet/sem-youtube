@@ -48,6 +48,19 @@ Génère dans `dist/` :
 
 Le support Windows n'est pas encore configuré.
 
+### Paquet `.deb`
+
+`electron-builder` délègue la génération du `.deb` à `fpm`, qui assemble l'archive finale avec `ar`. Sur macOS, l'`ar` système corrompt silencieusement cette archive (elle contient des membres non Mach-O, ce que le `ranlib` intégré à l'`ar` de macOS ne gère pas correctement) — le `.deb` produit fait alors 96 octets et ne s'installe pas. `npm run dist` ne construit donc pas de `.deb` sur macOS.
+
+Un script maison contourne le problème en reconstruisant le paquet à la main (format `ar` GNU minimal) à partir du dossier `dist/linux-arm64-unpacked` déjà généré :
+
+```bash
+npm run dist        # build d'abord la cible linux (AppImage), qui prépare le dossier unpacked
+npm run dist:deb     # reconstruit un .deb valide à partir de ce dossier
+```
+
+Si vous buildez directement sur une machine Linux, `npm run dist` avec la cible `deb` ajoutée dans `package.json` (`"linux": { "target": ["AppImage", "deb"] }`) fonctionnera nativement sans ce contournement.
+
 ## Licence
 
 AGPLv3, comme Digiview. Voir [LICENSE](./LICENSE).
