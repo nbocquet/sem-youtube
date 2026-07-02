@@ -1,11 +1,13 @@
 const { app, BrowserWindow, shell, Menu, ipcMain, clipboard } = require('electron')
 const path = require('path')
+const { demarrerServeurLocal } = require('./server')
 
 ipcMain.handle('read-clipboard', function () {
 	return clipboard.readText()
 })
 
 let fenetrePrincipale = null
+let baseURL = null
 
 function urlDepuisArgv (argv) {
 	return argv.find(function (arg) {
@@ -14,13 +16,10 @@ function urlDepuisArgv (argv) {
 }
 
 function chargerAccueil (fenetre, lienInitial) {
-	if (lienInitial) {
-		fenetre.loadFile(path.join(__dirname, 'renderer', 'index.html'), {
-			hash: 'lien=' + encodeURIComponent(lienInitial)
-		})
-	} else {
-		fenetre.loadFile(path.join(__dirname, 'renderer', 'index.html'))
-	}
+	const url = lienInitial
+		? baseURL + '/index.html#lien=' + encodeURIComponent(lienInitial)
+		: baseURL + '/index.html'
+	fenetre.loadURL(url)
 }
 
 function creerFenetre (lienInitial) {
@@ -46,8 +45,7 @@ function creerFenetre (lienInitial) {
 	})
 
 	fenetrePrincipale.webContents.on('will-navigate', function (evenement, url) {
-		const estFichierLocal = url.startsWith('file://') && url.includes(path.join(__dirname, 'renderer'))
-		if (!estFichierLocal) {
+		if (!url.startsWith(baseURL)) {
 			evenement.preventDefault()
 			shell.openExternal(url)
 		}
@@ -84,7 +82,10 @@ function construireMenu () {
 	Menu.setApplicationMenu(Menu.buildFromTemplate(modeles))
 }
 
-app.whenReady().then(function () {
+app.whenReady().then(async function () {
+	const serveur = await demarrerServeurLocal(path.join(__dirname, 'renderer'))
+	baseURL = 'http://127.0.0.1:' + serveur.address().port
+
 	construireMenu()
 	creerFenetre(urlDepuisArgv(process.argv.slice(1)))
 

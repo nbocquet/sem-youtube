@@ -210,12 +210,12 @@ function lecteurCharge () {
 	masque.classList.remove('vignette')
 	dureeEl.textContent = formatTime(duree)
 
-	// Résolution bug iframe Chrome
+	// Chromium/Electron : on démarre en muet, l'interaction de lecture démasque le son
+	// (contrairement à Digiview embarqué dans une page tierce, cette appli n'a pas
+	// besoin de faire passer le clic à travers l'iframe YouTube brute : on garde donc
+	// notre propre overlay cliquable plutôt que de désactiver ses pointer-events).
 	if (blink === true) {
 		player.mute()
-		masqueTransparent.style.pointerEvents = 'none'
-		masqueVideo.style.pointerEvents = 'auto'
-		videoIframe.style.pointerEvents = 'auto'
 	}
 
 	masqueTransparent.focus()
@@ -538,11 +538,6 @@ function definirTemps () {
     }
 }
 
-if (blink === true && videoLancee === false) {
-	masqueTransparent.style.pointerEvents = 'none'
-	masqueVideo.style.pointerEvents = 'auto'
-	videoIframe.style.pointerEvents = 'auto'
-}
 
 function lecture () {
     if (statut !== 1) {
@@ -569,9 +564,6 @@ function lecture () {
 		if (blink === true && videoLancee === false) {
 			videoLancee = true
 			player.unMute()
-			masqueTransparent.style.pointerEvents = 'auto'
-			masqueVideo.style.pointerEvents = 'none'
-			videoIframe.style.pointerEvents = 'none'
 		}
     } else {
 		videoIframe.style.height = 'calc(100% + 460px)'
@@ -632,13 +624,9 @@ function statutLecteurModifie (event) {
 			bouton.setAttribute('tabindex', '0')
 		})
     }
-	// Résolution bug iframe Chrome
 	if (statut === 1 && blink === true && videoLancee === false) {
 		videoLancee = true
 		player.unMute()
-		masqueTransparent.style.pointerEvents = 'auto'
-		masqueVideo.style.pointerEvents = 'none'
-		videoIframe.style.pointerEvents = 'none'
 	}
 }
 
